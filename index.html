@@ -31,6 +31,7 @@
       align-items: center;
     }
 
+    /* 大頭貼預留區 */
     .profile-photo {
       width: 240px;
       height: 240px;
@@ -45,6 +46,13 @@
       text-align: center;
       box-shadow: 0 12px 35px rgba(80, 70, 60, .12);
       overflow: hidden;
+    }
+
+    .profile-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
     }
 
     .hero-text .tag {
@@ -195,6 +203,7 @@
       color: #625e59;
     }
 
+    /* 報名表單 */
     .form-section { background:#f1ebe5; border-radius:24px; padding:40px; }
     .registration-form { max-width:760px; margin:auto; background:#fffdfb; padding:30px; border-radius:18px; border:1px solid #e9e0d7; }
     .form-group { margin-bottom:20px; }
@@ -203,21 +212,23 @@
     textarea { min-height:110px; resize:vertical; }
     .required { color:#b77b6f; }
     
-    /* 按鈕預設與停用樣式 */
     button { 
-      border:0; 
-      border-radius:22px; 
-      padding:11px 30px; 
-      background:#8eaaa3; 
-      color:white; 
-      font-size:16px; 
-      cursor:pointer; 
-      transition: background 0.3s, cursor 0.3s;
+      border: 0; 
+      border-radius: 22px; 
+      padding: 11px 30px; 
+      background: #8eaaa3; 
+      color: white; 
+      font-size: 16px; 
+      cursor: pointer; 
+      transition: background-color 0.3s;
     }
-    button:hover:not(:disabled) { background:#6f8f87; }
+    button:hover:not(:disabled) { background: #6f8f87; }
+    
+    /* 按鈕停用時的樣式 */
     button:disabled {
-      background: #a0a0a0 !important;
+      background: #a3a3a3 !important;
       cursor: not-allowed;
+      opacity: 0.8;
     }
     
     .flex-row { display:flex; flex-direction:row; justify-content:center; align-items:stretch; gap:16px; flex-wrap:wrap; }
@@ -235,20 +246,47 @@
       font-size: 13px;
     }
 
+    /* RWD Media Query：螢幕寬度小於 768px 時直向堆疊 */
     @media (max-width: 768px) {
       .hero-content {
         grid-template-columns: 1fr;
         gap: 30px;
         text-align: center;
       }
-      .profile-photo { margin: 0 auto; }
-      nav ul { gap: 12px 18px; padding: 10px 15px; }
-      .info-grid, .about { grid-template-columns: 1fr; }
-      .flex-row { flex-direction: column; }
-      .interest-card { flex: 1 1 100%; width: 100%; }
-      .traits { justify-content: center; }
-      .form-section { padding: 25px 15px; }
-      .registration-form { padding: 20px 15px; }
+      .profile-photo {
+        margin: 0 auto;
+      }
+
+      nav ul {
+        gap: 12px 18px;
+        padding: 10px 15px;
+      }
+
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+      .about {
+        grid-template-columns: 1fr;
+      }
+
+      .flex-row {
+        flex-direction: column;
+      }
+      .interest-card {
+        flex: 1 1 100%;
+        width: 100%;
+      }
+
+      .traits {
+        justify-content: center;
+      }
+
+      .form-section {
+        padding: 25px 15px;
+      }
+      .registration-form {
+        padding: 20px 15px;
+      }
     }
   </style>
 </head>
@@ -266,7 +304,7 @@
         <div class="subtitle">勤益科技大學｜資訊管理系｜大二</div>
         <p class="intro">
           歡迎來到我的個人介紹網站！我是勤益科技大學資訊管理系的學生。
-          在大學列表中，我除了努力學習專業知識，也積極參與課外活動、
+          在大學生活中，我除了努力學習專業知識，也積極參與課外活動、
           團隊合作與各種新的挑戰，希望在累積經驗的同時，也逐漸找到自己的方向。
         </p>
       </article>
@@ -358,7 +396,7 @@
 
     <section id="registration" class="form-section">
       <h2 class="section-title">活動報名表單<span>REGISTRATION</span></h2>
-      <form id="registrationForm" class="registration-form" action="#" method="post">
+      <form id="regForm" class="registration-form" action="#" method="post">
         <div class="form-group"><label for="name">姓名 <span class="required">*</span></label><input type="text" id="name" name="name" required></div>
         <div class="form-group"><label for="email">Email <span class="required">*</span></label><input type="email" id="email" name="email" required></div>
         <div class="form-group"><label for="session">報名場次</label><select id="session" name="session"><option value="">請選擇場次</option><option>上午場 09:00－12:00</option><option>下午場 13:00－16:00</option><option>晚間場 18:00－21:00</option></select></div>
@@ -375,22 +413,35 @@
   </footer>
 
   <script>
-    // 導覽列滾動與切換
-    const links=document.querySelectorAll("nav a");
-    links.forEach(link=>link.addEventListener("click",function(e){if(this.classList.contains("active")){e.preventDefault();}else{links.forEach(x=>x.classList.remove("active"));this.classList.add("active");}}));
-    const sections=document.querySelectorAll("main section");
-    const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.toggle("active",l.getAttribute("href")==="#"+e.target.id));}}),{rootMargin:"-25% 0px -60% 0px"});
-    sections.forEach(s=>observer.observe(s));
+    // 導覽選單與章節偵測
+    const links = document.querySelectorAll("nav a");
+    links.forEach(link => link.addEventListener("click", function(e) {
+      if(this.classList.contains("active")) {
+        e.preventDefault();
+      } else {
+        links.forEach(x => x.classList.remove("active"));
+        this.classList.add("active");
+      }
+    }));
+    
+    const sections = document.querySelectorAll("main section");
+    const observer = new IntersectionObserver(entries => entries.forEach(e => {
+      if(e.isIntersecting) {
+        links.forEach(l => l.classList.toggle("active", l.getAttribute("href") === "#" + e.target.id));
+      }
+    }), {rootMargin: "-25% 0px -60% 0px"});
+    sections.forEach(s => observer.observe(s));
 
-    // 表單送出時修改按鈕狀態
-    const regForm = document.getElementById('registrationForm');
+    // 表單提交處理邏輯
+    const form = document.getElementById('regForm');
     const submitBtn = document.getElementById('submitBtn');
 
-    regForm.addEventListener('submit', function(e) {
-      e.preventDefault(); // 阻止網頁刷新的預設行為
+    form.addEventListener('submit', function(e) {
+      e.preventDefault(); // 阻止頁面跳轉刷新
 
+      // 更改按鈕文字與狀態
       submitBtn.textContent = '已送出';
-      submitBtn.disabled = true; // 設為停用（變灰且不可再按）
+      submitBtn.disabled = true;
     });
   </script>
 </body>
