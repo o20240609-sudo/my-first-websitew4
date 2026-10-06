@@ -25,13 +25,12 @@
 
     .hero-content {
       width: min(1050px, 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: grid;
+      grid-template-columns: 260px 1fr;
       gap: 55px;
+      align-items: center;
     }
 
-    /* 大頭貼預留區 */
     .profile-photo {
       width: 240px;
       height: 240px;
@@ -46,14 +45,6 @@
       text-align: center;
       box-shadow: 0 12px 35px rgba(80, 70, 60, .12);
       overflow: hidden;
-      flex-shrink: 0;
-    }
-
-    .profile-photo img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: none;
     }
 
     .hero-text .tag {
@@ -142,13 +133,10 @@
       margin-top: 3px;
     }
 
-    /* 基本資料：Flexbox 橫向排列 */
     .info-grid {
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-      gap: 16px;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
     }
 
     .card {
@@ -157,11 +145,6 @@
       border-radius: 18px;
       padding: 25px;
       box-shadow: 0 8px 25px rgba(80, 70, 60, .06);
-    }
-
-    .info-grid .card {
-      flex: 1 1 200px;
-      min-width: 200px;
     }
 
     .info-item strong {
@@ -173,21 +156,10 @@
 
     .info-item p { font-size: 17px; }
 
-    /* 關於我：Flexbox 橫向排列 */
     .about {
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-
-    .about .card:first-child {
-      flex: 1.2 1 300px;
-    }
-
-    .about .card:last-child {
-      flex: 0.8 1 250px;
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 22px;
     }
 
     .about p {
@@ -223,7 +195,6 @@
       color: #625e59;
     }
 
-    /* 報名表單 */
     .form-section { background:#f1ebe5; border-radius:24px; padding:40px; }
     .registration-form { max-width:760px; margin:auto; background:#fffdfb; padding:30px; border-radius:18px; border:1px solid #e9e0d7; }
     .form-group { margin-bottom:20px; }
@@ -231,12 +202,26 @@
     input, select, textarea { width:100%; padding:11px 13px; border:1px solid #d9d0c8; border-radius:10px; background:#fff; font:inherit; color:#4d4a46; }
     textarea { min-height:110px; resize:vertical; }
     .required { color:#b77b6f; }
-    button { border:0; border-radius:22px; padding:11px 30px; background:#8eaaa3; color:white; font-size:16px; cursor:pointer; }
-    button:hover { background:#6f8f87; }
     
-    /* 興趣區塊：Flexbox 橫向排列 */
+    /* 按鈕預設與停用樣式 */
+    button { 
+      border:0; 
+      border-radius:22px; 
+      padding:11px 30px; 
+      background:#8eaaa3; 
+      color:white; 
+      font-size:16px; 
+      cursor:pointer; 
+      transition: background 0.3s, cursor 0.3s;
+    }
+    button:hover:not(:disabled) { background:#6f8f87; }
+    button:disabled {
+      background: #a0a0a0 !important;
+      cursor: not-allowed;
+    }
+    
     .flex-row { display:flex; flex-direction:row; justify-content:center; align-items:stretch; gap:16px; flex-wrap:wrap; }
-    .interest-card { flex:1 1 200px; text-align:center; padding:28px 15px; background:#fffaf6; border:1px solid #eee2d8; border-radius:18px; box-shadow:0 5px 18px rgba(80,70,60,.05); }
+    .interest-card { flex:0 1 250px; text-align:center; padding:28px 15px; background:#fffaf6; border:1px solid #eee2d8; border-radius:18px; box-shadow:0 5px 18px rgba(80,70,60,.05); }
     .interest-card h3 { color:#5f706c; font-size:17px; }
     .interest-card p { font-size:13px; color:#77716b; }
     .icon { font-size:32px; margin-bottom:8px; }
@@ -250,45 +235,20 @@
       font-size: 13px;
     }
 
-    /* --------------------------------------------------
-       Media Query：螢幕寬度小於 768px 時轉為直向堆疊
-       -------------------------------------------------- */
     @media (max-width: 768px) {
       .hero-content {
-        flex-direction: column;
+        grid-template-columns: 1fr;
         gap: 30px;
         text-align: center;
       }
-
-      nav ul {
-        gap: 12px 18px;
-        padding: 10px 15px;
-      }
-
-      /* 將原本橫向排列的區塊改為直向堆疊 */
-      .info-grid, 
-      .about, 
-      .flex-row {
-        flex-direction: column;
-      }
-      
-      .interest-card, 
-      .info-grid .card, 
-      .about .card {
-        flex: 1 1 100%;
-        width: 100%;
-      }
-
-      .traits {
-        justify-content: center;
-      }
-
-      .form-section {
-        padding: 25px 15px;
-      }
-      .registration-form {
-        padding: 20px 15px;
-      }
+      .profile-photo { margin: 0 auto; }
+      nav ul { gap: 12px 18px; padding: 10px 15px; }
+      .info-grid, .about { grid-template-columns: 1fr; }
+      .flex-row { flex-direction: column; }
+      .interest-card { flex: 1 1 100%; width: 100%; }
+      .traits { justify-content: center; }
+      .form-section { padding: 25px 15px; }
+      .registration-form { padding: 20px 15px; }
     }
   </style>
 </head>
@@ -298,9 +258,6 @@
     <div class="hero-content">
       <div class="profile-photo">
         <span>大頭貼預留區<br>放入你的照片</span>
-        <!-- 如果要放照片，把下面 img 的 src 改成你的圖片檔名即可
-        <img src="profile.jpg" alt="個人大頭貼">
-        -->
       </div>
 
       <article class="hero-text">
@@ -309,7 +266,7 @@
         <div class="subtitle">勤益科技大學｜資訊管理系｜大二</div>
         <p class="intro">
           歡迎來到我的個人介紹網站！我是勤益科技大學資訊管理系的學生。
-          在大學生活中，我除了努力學習專業知識，也積極參與課外活動、
+          在大學列表中，我除了努力學習專業知識，也積極參與課外活動、
           團隊合作與各種新的挑戰，希望在累積經驗的同時，也逐漸找到自己的方向。
         </p>
       </article>
@@ -401,14 +358,14 @@
 
     <section id="registration" class="form-section">
       <h2 class="section-title">活動報名表單<span>REGISTRATION</span></h2>
-      <form class="registration-form" action="#" method="post">
+      <form id="registrationForm" class="registration-form" action="#" method="post">
         <div class="form-group"><label for="name">姓名 <span class="required">*</span></label><input type="text" id="name" name="name" required></div>
         <div class="form-group"><label for="email">Email <span class="required">*</span></label><input type="email" id="email" name="email" required></div>
         <div class="form-group"><label for="session">報名場次</label><select id="session" name="session"><option value="">請選擇場次</option><option>上午場 09:00－12:00</option><option>下午場 13:00－16:00</option><option>晚間場 18:00－21:00</option></select></div>
         <div class="form-group"><label for="people">參加人數</label><input type="number" id="people" name="people" min="1" max="20" value="1"></div>
         <div class="form-group"><label for="diet">飲食禁忌</label><input type="text" id="diet" name="diet" placeholder="例如：素食、蛋奶素、無"></div>
         <div class="form-group"><label for="needs">其他需求</label><textarea id="needs" name="needs"></textarea></div>
-        <button type="submit">送出報名</button>
+        <button type="submit" id="submitBtn">送出報名</button>
       </form>
     </section>
   </main>
@@ -418,11 +375,23 @@
   </footer>
 
   <script>
+    // 導覽列滾動與切換
     const links=document.querySelectorAll("nav a");
     links.forEach(link=>link.addEventListener("click",function(e){if(this.classList.contains("active")){e.preventDefault();}else{links.forEach(x=>x.classList.remove("active"));this.classList.add("active");}}));
     const sections=document.querySelectorAll("main section");
     const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.toggle("active",l.getAttribute("href")==="#"+e.target.id));}}),{rootMargin:"-25% 0px -60% 0px"});
     sections.forEach(s=>observer.observe(s));
+
+    // 表單送出時修改按鈕狀態
+    const regForm = document.getElementById('registrationForm');
+    const submitBtn = document.getElementById('submitBtn');
+
+    regForm.addEventListener('submit', function(e) {
+      e.preventDefault(); // 阻止網頁刷新的預設行為
+
+      submitBtn.textContent = '已送出';
+      submitBtn.disabled = true; // 設為停用（變灰且不可再按）
+    });
   </script>
 </body>
 </html>
